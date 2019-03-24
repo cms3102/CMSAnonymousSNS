@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View.Z
 import android.widget.Toast
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
@@ -11,13 +12,15 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 class SignUpActivity : AppCompatActivity() {
 
-    lateinit var id:String
-    lateinit var  pw1:String
-    lateinit var  pw2:String
-    lateinit var firebaseAuth:FirebaseAuth
+    private lateinit var id:String
+    private lateinit var  pw1:String
+    private lateinit var  pw2:String
+    private lateinit var firebaseAuth:FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +36,11 @@ class SignUpActivity : AppCompatActivity() {
             id = signUpIdEditText.text.toString()
             pw1 = signUpPwEditText1.text.toString()
             pw2 = signUpPwEditText2.text.toString()
+
+            if (!validateEmail(id)){
+                Toast.makeText(this@SignUpActivity, "올바른 이메일 주소를 입력해 주세요.", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
 
             // 비밀번호 길이 검사
             if (pw1.length < 6 || pw2.length < 6){
@@ -68,5 +76,10 @@ class SignUpActivity : AppCompatActivity() {
             })
 
         }
+    }
+
+    private fun validateEmail(email:String):Boolean{
+        val regexResult = Regex("(\\w+\\.)*\\w+@(\\w+\\.)+[A-Za-z]+").matches(email)
+        return regexResult
     }
 }

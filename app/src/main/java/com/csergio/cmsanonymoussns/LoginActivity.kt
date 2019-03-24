@@ -15,10 +15,10 @@ import kotlinx.android.synthetic.main.toolbar.*
 
 class LoginActivity : AppCompatActivity() {
 
-    lateinit var firabaseAuth:FirebaseAuth
+    private lateinit var firabaseAuth:FirebaseAuth
 
-    lateinit var id:String
-    lateinit var pw:String
+    private lateinit var id:String
+    private lateinit var pw:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

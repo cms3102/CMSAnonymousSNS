@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Visibility
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_detail.*
@@ -23,26 +24,29 @@ import kotlinx.android.synthetic.main.card_comment.view.*
 class DetailActivity : AppCompatActivity() {
 
     // 댓글 목록 저장 변수
-    val commentList = mutableListOf<Comment>()
+    private val commentList = mutableListOf<Comment>()
 
     // 부모글 아이디 저장 변수
-    var postingId = ""
+    private var postingId = ""
 
     // 배경 이미지 주소 저장 변수
-    var backgroundUri = ""
+    private var backgroundUri = ""
 
     // 플로팅액션버튼 토글값 저장 변수
-    var fabState = false
+    private var fabState = false
 
     // 글 작성자 아이디 저장 변수
-    var writerId = ""
+    private var writerId = ""
 
     // 사용자 아이디 저장 변수
-    var userId = ""
+    private var userId = ""
 
     // 플로팅버튼 애니메이션 저장 변수
-    lateinit var fabOpen:Animation
-    lateinit var fabClose:Animation
+    private lateinit var fabOpen:Animation
+    private lateinit var fabClose:Animation
+
+    // 파이어베이스 인증 객체 저장 변수
+    private lateinit var firbaseAuth:FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,8 +59,12 @@ class DetailActivity : AppCompatActivity() {
         // 부모글 아이디 저장
         postingId = intent.getStringExtra("postingId")
 
+        // 파이어 베이스 인증 객체 저장
+        firbaseAuth = FirebaseAuth.getInstance()
+
         // 사용자 아이디 저장
-        userId = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
+//        userId = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
+        userId = firbaseAuth.currentUser?.uid.toString()
 
         // 플로팅액션버튼 애니메이션 저장 변수
         fabOpen = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_open)
@@ -157,7 +165,7 @@ class DetailActivity : AppCompatActivity() {
 
         // 플로팅액션버튼 클릭 시 댓글 쓰기 화면 전환
         detailToggleFAB.setOnClickListener {
-            toogleFAB(fabState)
+            toggleFAB(fabState)
         }
 
         // 댓글 쓰기 버튼 클릭 이벤트 설정
@@ -168,8 +176,7 @@ class DetailActivity : AppCompatActivity() {
             // 댓글이 소속될 글의 아이디 전달
             intent.putExtra("postingId", postingId)
             startActivity(intent)
-            toogleFAB(true)
-
+            toggleFAB(true)
         }
 
         // 글 수정 버튼 클릭 이벤트 설정
@@ -184,13 +191,25 @@ class DetailActivity : AppCompatActivity() {
             // 배경 이미지 주소 전달
             intent.putExtra("postingBackground", backgroundUri)
             startActivity(intent)
-            toogleFAB(true)
+            toggleFAB(true)
+        }
+
+        // 글 삭제 버튼 이벤트 설정
+        deleteDetailButton.setOnClickListener {
+            // 파이어베이스 DB에서 글과 댓글 삭제
+            val firebaseDB = FirebaseDatabase.getInstance()
+                firebaseDB.getReference("/Postings/$postingId").removeValue()
+                firebaseDB.getReference("/Comments/$postingId").removeValue()
+            // 메세지 띄우고 리스트로 이동
+            Toast.makeText(this@DetailActivity, "글이 삭제되었습니다.", Toast.LENGTH_LONG).show()
+            val intent = Intent(this@DetailActivity, MainActivity::class.java)
+            startActivity(intent)
         }
 
     }
 
     // 아이디 일치 확인 메소드
-    fun checkId():Boolean{
+    private fun checkId():Boolean{
         if(writerId != "" && userId != "" && writerId == userId) {
             return true
         }
@@ -198,21 +217,28 @@ class DetailActivity : AppCompatActivity() {
     }
 
     // 플로팅액션버튼 토글 메소드
-    fun toogleFAB(State:Boolean){
-        if (State){
-            writeCommentButton.startAnimation(fabClose)
-            // 작성자 아이디와 사용자 아이디가 일치할 경우에만 수정 버튼 표시
-            if (checkId()){
-                modifyDetailButton.startAnimation(fabClose)
+    private fun toggleFAB(State:Boolean){
+
+        // 로그인 확인
+        if (firbaseAuth.currentUser != null){
+            if (State){
+                writeCommentButton.startAnimation(fabClose)
+                // 작성자 아이디와 사용자 아이디가 일치할 경우에만 수정 버튼 표시
+                if (checkId()){
+                    modifyDetailButton.startAnimation(fabClose)
+                    deleteDetailButton.startAnimation(fabClose)
+                }
+                fabState = false
+            } else {
+                writeCommentButton.startAnimation(fabOpen)
+                if (checkId()){
+                    modifyDetailButton.startAnimation(fabOpen)
+                    deleteDetailButton.startAnimation(fabOpen)
+                }
+                fabState = true
             }
-            fabState = false
-        } else {
-            writeCommentButton.startAnimation(fabOpen)
-            if (checkId()){
-                modifyDetailButton.startAnimation(fabOpen)
-            }
-            fabState = true
         }
+
     }
 
     // 뷰홀더
@@ -229,10 +255,17 @@ class DetailActivity : AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
+            var size = commentList.size
             // 이 글의 댓글 수 DB 정보 업데이트
-            FirebaseDatabase.getInstance().getReference("/Postings/$postingId").child("commentCount").setValue(commentList.size)
-            Log.d("태그", "commentCount ${commentList.size}로 업데이트 됨")
-            return commentList.size
+            if (size > 0){
+                Toast.makeText(this@DetailActivity, "댓글 정보 있음", Toast.LENGTH_LONG).show()
+                FirebaseDatabase.getInstance().getReference("/Postings/$postingId").child("commentCount").setValue(commentList.size)
+                Log.d("태그", "commentCount ${commentList.size}로 업데이트 됨")
+            } else {
+                Toast.makeText(this@DetailActivity, "댓글 정보 없음", Toast.LENGTH_LONG).show()
+                Log.d("태그", "현재 commentCount ${commentList.size}")
+            }
+            return size
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {

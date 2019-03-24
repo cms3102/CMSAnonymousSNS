@@ -1,6 +1,7 @@
 package com.csergio.cmsanonymoussns
 
 import android.graphics.Color
+import android.hardware.usb.UsbDevice.getDeviceId
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.squareup.picasso.Picasso
@@ -22,7 +24,7 @@ import kotlinx.android.synthetic.main.card_background.view.*
 class WriteActivity : AppCompatActivity() {
 
     // 카드 배경 데이터 모음
-    val backgroundList = mutableListOf(
+    private val backgroundList = mutableListOf(
         "android.resource://com.csergio.cmsanonymoussns/drawable/bg1",
         "android.resource://com.csergio.cmsanonymoussns/drawable/bg2",
         "android.resource://com.csergio.cmsanonymoussns/drawable/bg3",
@@ -32,17 +34,23 @@ class WriteActivity : AppCompatActivity() {
     )
 
     // 일반글/댓글 쓰기 구분값 저장 변수
-    var type = "write"
+    private var type = "write"
 
     // 댓글이 속할 글의 아이디
-    var postingId = ""
+    private var postingId = ""
 
     // 현재 선택된 배경 이미지 인덱스 저장용 변수
-    var currentBackgroundIndex = 0
+    private var currentBackgroundIndex = 0
+
+    // 사용자 아이디 저장 변수
+    lateinit var userId:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_write)
+
+        // 사용자 아이디 저장
+        userId = FirebaseAuth.getInstance().currentUser?.uid.toString()
 
         // 글쓰기 구분 확인
         intent.getStringExtra("type")?.let {
@@ -90,7 +98,7 @@ class WriteActivity : AppCompatActivity() {
             when(type){
 
                 "write" -> {
-                    Log.d("로그", "일반 글쓰기 모드임")
+                    Log.d("로그", "일반 글쓰기 모드")
                     // 작성한 내용을 담을 Posting 클래스 생성
                     val posting = Posting()
 
@@ -103,7 +111,7 @@ class WriteActivity : AppCompatActivity() {
                     // 파이어베이스에서 생성해준 키를 글의 아이디로 할당
                     posting.postingId = firebaseRef.key.toString()
                     // 휴대폰 디바이스 아이디를 작성자 아이디로 할당
-                    posting.writerId = getDeviceId()
+                    posting.writerId = userId
                     // 글 작성 시간은 파이어베이스 서버 시간으로 할당
                     posting.time = ServerValue.TIMESTAMP
 
@@ -112,7 +120,7 @@ class WriteActivity : AppCompatActivity() {
                 }
 
                 "comment" -> {
-                    Log.d("로그", "댓글 쓰기 모드임")
+                    Log.d("로그", "댓글 쓰기 모드")
                     val comment = Comment()
 
                     val firebaseRef = FirebaseDatabase.getInstance().getReference("Comments/$postingId").push()
@@ -122,13 +130,13 @@ class WriteActivity : AppCompatActivity() {
                     comment.content = writeContent.text.toString()
                     comment.parentId = postingId
                     comment.time = ServerValue.TIMESTAMP
-                    comment.writerId = getDeviceId()
+                    comment.writerId = userId
 
                     firebaseRef.setValue(comment)
                 }
 
                 "modify" -> {
-                    Log.d("로그", "수정 모드임")
+                    Log.d("로그", "수정 모드")
                     val posting = Posting()
 
                     val firebaseRef = FirebaseDatabase.getInstance().getReference("Postings/$postingId")
@@ -136,7 +144,7 @@ class WriteActivity : AppCompatActivity() {
                     posting.background = intent.getStringExtra("postingBackground")
                     posting.content = writeContent.text.toString()
                     posting.postingId = firebaseRef.key.toString()
-                    posting.writerId = getDeviceId()
+                    posting.writerId = userId
                     posting.time = ServerValue.TIMESTAMP
 
                     firebaseRef.setValue(posting)
@@ -149,11 +157,6 @@ class WriteActivity : AppCompatActivity() {
 
         }
 
-    }
-
-    // 디바이스 아이디 반환 메소드
-    fun getDeviceId():String{
-        return Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
     }
 
     // 뷰를 담을 뷰홀더 클래스

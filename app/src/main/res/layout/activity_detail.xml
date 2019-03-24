@@ -69,4 +69,13 @@
             app:layout_constraintStart_toStartOf="@+id/detailToggleFAB"
             app:layout_constraintEnd_toEndOf="@+id/detailToggleFAB" app:backgroundTint="@color/colorButtonText"
             android:visibility="invisible"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true" app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
+            android:id="@+id/deleteDetailButton"
+            app:layout_constraintEnd_toEndOf="@+id/detailToggleFAB"
+            app:layout_constraintStart_toStartOf="@+id/detailToggleFAB"
+            app:layout_constraintBottom_toTopOf="@+id/modifyDetailButton"
+            app:backgroundTint="@color/common_google_signin_btn_text_dark_default" android:visibility="invisible"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

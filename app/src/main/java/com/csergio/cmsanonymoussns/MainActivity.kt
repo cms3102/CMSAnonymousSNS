@@ -33,9 +33,9 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     // DB에서 가져온 글 목록을 저장할 변수 선언
-    val postings:MutableList<Posting> = mutableListOf()
+    private val postings:MutableList<Posting> = mutableListOf()
 
-    lateinit var firebaseAuth:FirebaseAuth
+    private lateinit var firebaseAuth:FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -176,10 +176,10 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         // 로그인 사용자에게만 플로팅액션버튼 보여주기
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        if (currentUser == null) {
-            floatingActionButton.visibility = View.INVISIBLE
-        }
+//        val currentUser = FirebaseAuth.getInstance().currentUser
+//        if (currentUser == null) {
+//            floatingActionButton.visibility = View.INVISIBLE
+//        }
     }
 
     // 뷰홀더 클래스 생성 및 변수에 뷰 할당
