@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                   xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                                   android:layout_height="220dp" android:id="@+id/cardView" app:cardCornerRadius="5dp"
+                                   app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <ImageView
+                android:layout_width="0dp"
+                android:layout_height="0dp" app:srcCompat="@android:color/holo_blue_dark"
+                android:id="@+id/cardBackground" app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintVertical_bias="0.036"/>
+        <TextView
+                android:text="Content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/listContent"
+                android:textColor="@android:color/white" android:textSize="20sp" android:layout_marginTop="8dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+                android:maxLines="3" android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline" android:background="#66000000"
+                android:paddingLeft="10dp" android:paddingRight="10dp" android:paddingBottom="5dp"
+                android:paddingTop="5dp"/>
+        <androidx.constraintlayout.widget.Guideline
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/guideline" app:layout_constraintGuide_percent="0.8"/>
+        <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:id="@+id/bottomBackground"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/guideline"
+                android:background="#66000000"/>
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp" app:srcCompat="@android:drawable/ic_menu_recent_history"
+                android:id="@+id/clockImage" app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="@+id/guideline"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp" android:layout_marginTop="8dp" android:adjustViewBounds="true"/>
+        <TextView
+                android:text="Time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/timeText"
+                app:layout_constraintTop_toTopOf="@+id/clockImage" android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/clockImage"
+                app:layout_constraintStart_toEndOf="@+id/clockImage" android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp" android:textColor="@android:color/white"/>
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp" app:srcCompat="@android:drawable/sym_action_chat"
+                android:id="@+id/commentImage" app:layout_constraintEnd_toStartOf="@+id/commentCountText"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintTop_toTopOf="@+id/clockImage"
+                app:layout_constraintBottom_toBottomOf="@+id/clockImage"
+                android:adjustViewBounds="true"/>
+        <TextView
+                android:text="Count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/commentCountText" app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp" android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/clockImage"
+                app:layout_constraintTop_toTopOf="@+id/clockImage"
+                android:textColor="@android:color/white" android:layout_marginTop="8dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
