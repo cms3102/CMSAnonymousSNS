@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     // DB에서 가져온 글 목록을 저장할 변수 선언
     private val postings:MutableList<Posting> = mutableListOf()
 
+    // 파이어베이스 인증 객체 저장 변수
     private lateinit var firebaseAuth:FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,18 +45,8 @@ class MainActivity : AppCompatActivity() {
         // 툴바 적용
         setSupportActionBar(toolbar)
 
-        // 파이어베이스 인증 객체 저장
-        firebaseAuth = FirebaseAuth.getInstance()
-
         // 액션 바 제목 변경
         supportActionBar?.title = "이야기 목록"
-
-        // 플로팅액션버튼 클릭 시 이벤트 리스너 등록
-        floatingActionButton.setOnClickListener {
-            // Intent를 통해 WriteActivity 실행
-            val intent = Intent(this@MainActivity, WriteActivity::class.java)
-            startActivity(intent)
-        }
 
         // 레이아웃 매니저 생성
         val layoutManager = LinearLayoutManager(this@MainActivity)
@@ -151,6 +142,16 @@ class MainActivity : AppCompatActivity() {
 
         })
 
+        // 파이어베이스 인증 객체 저장
+        firebaseAuth = FirebaseAuth.getInstance()
+
+        // 플로팅액션버튼 클릭 시 이벤트 리스너 등록
+        floatingActionButton.setOnClickListener {
+            // Intent를 통해 WriteActivity 실행
+            val intent = Intent(this@MainActivity, WriteActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     // 툴바 메뉴 생성
@@ -171,15 +172,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        // 로그인 사용자에게만 플로팅액션버튼 보여주기
-//        val currentUser = FirebaseAuth.getInstance().currentUser
-//        if (currentUser == null) {
-//            floatingActionButton.visibility = View.INVISIBLE
-//        }
     }
 
     // 뷰홀더 클래스 생성 및 변수에 뷰 할당

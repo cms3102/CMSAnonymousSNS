@@ -175,6 +175,7 @@ class DetailActivity : AppCompatActivity() {
             intent.putExtra("type", "comment")
             // 댓글이 소속될 글의 아이디 전달
             intent.putExtra("postingId", postingId)
+            intent.putExtra("commentCount", commentList.size.toString())
             startActivity(intent)
             toggleFAB(true)
         }
@@ -255,17 +256,7 @@ class DetailActivity : AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
-            var size = commentList.size
-            // 이 글의 댓글 수 DB 정보 업데이트
-            if (size > 0){
-                Toast.makeText(this@DetailActivity, "댓글 정보 있음", Toast.LENGTH_LONG).show()
-                FirebaseDatabase.getInstance().getReference("/Postings/$postingId").child("commentCount").setValue(commentList.size)
-                Log.d("태그", "commentCount ${commentList.size}로 업데이트 됨")
-            } else {
-                Toast.makeText(this@DetailActivity, "댓글 정보 없음", Toast.LENGTH_LONG).show()
-                Log.d("태그", "현재 commentCount ${commentList.size}")
-            }
-            return size
+            return commentList.size
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {

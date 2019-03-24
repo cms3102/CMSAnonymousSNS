@@ -45,6 +45,9 @@ class WriteActivity : AppCompatActivity() {
     // 사용자 아이디 저장 변수
     lateinit var userId:String
 
+    // 전체 댓글 수 저장 변수
+    lateinit var commentCount:String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_write)
@@ -56,6 +59,10 @@ class WriteActivity : AppCompatActivity() {
         intent.getStringExtra("type")?.let {
             type = intent.getStringExtra("type")
             postingId = intent.getStringExtra("postingId")
+            if (type == "comment"){
+                // 댓글 수 업데이트를 위한 현재 댓글 수 저장
+                commentCount = intent.getStringExtra("commentCount")
+            }
         }
 
         // 액션 바 제목 변경
@@ -77,7 +84,6 @@ class WriteActivity : AppCompatActivity() {
 
         // type이 글 수정일 때 글 내용 및 배경 이미지 뿌려주기
         if (type == "modify"){
-
             Picasso.get()
                 .load(Uri.parse(intent.getStringExtra("postingBackground")))
                 .fit()
@@ -133,6 +139,8 @@ class WriteActivity : AppCompatActivity() {
                     comment.writerId = userId
 
                     firebaseRef.setValue(comment)
+                    // 댓글 수 DB 정보 업데이트
+                    FirebaseDatabase.getInstance().getReference("/Postings/$postingId").child("commentCount").setValue(commentCount.toInt() + 1)
                 }
 
                 "modify" -> {
