@@ -40,7 +40,7 @@ class DetailActivity : AppCompatActivity() {
     // 사용자 아이디 저장 변수
     var userId = ""
 
-    // 플로팅 버튼 애니메이션 저장 변수
+    // 플로팅버튼 애니메이션 저장 변수
     lateinit var fabOpen:Animation
     lateinit var fabClose:Animation
 

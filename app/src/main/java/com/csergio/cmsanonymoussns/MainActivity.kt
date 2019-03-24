@@ -153,11 +153,13 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    // 툴바 메뉴 생성
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_toolbar, menu)
         return true
     }
 
+    // 툴바 메뉴 선택 이벤트 처리
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         item?.let {
             if (item.itemId == R.id.logoutMenu) {
