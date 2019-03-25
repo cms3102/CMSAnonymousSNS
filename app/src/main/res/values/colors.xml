@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2196F3</color>
+    <color name="colorPrimary">#163650</color>
     <color name="colorPrimaryDark">#1976D2</color>
     <color name="colorAccent">#FF5722</color>
     <!-- 버튼색 -->
-    <color name="colorButtonNormal">#2196F3</color>
+    <color name="colorButtonNormal">#47ACFF</color>
     <!-- 버튼 글자색 -->
     <color name="colorButtonText">#FFFFFF</color>
 </resources>

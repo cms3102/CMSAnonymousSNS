@@ -30,7 +30,8 @@ class WriteActivity : AppCompatActivity() {
         "android.resource://com.csergio.cmsanonymoussns/drawable/bg3",
         "android.resource://com.csergio.cmsanonymoussns/drawable/bg4",
         "android.resource://com.csergio.cmsanonymoussns/drawable/bg5",
-        "android.resource://com.csergio.cmsanonymoussns/drawable/bg6"
+        "android.resource://com.csergio.cmsanonymoussns/drawable/bg6",
+        "android.resource://com.csergio.cmsanonymoussns/drawable/bg7"
     )
 
     // 일반글/댓글 쓰기 구분값 저장 변수
