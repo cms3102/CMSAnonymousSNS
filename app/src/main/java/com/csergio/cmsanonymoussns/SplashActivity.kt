@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import androidx.core.os.postDelayed
 
 // 스플래시 화면 출력을 위한 액티비티
 class SplashActivity : AppCompatActivity() {
